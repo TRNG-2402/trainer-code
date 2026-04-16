@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProductCatalog.Models;
 
 namespace ProductCatalog.Data;
@@ -21,6 +22,8 @@ public class AppDbContext : DbContext
     // to tell it where to find (or create) our database
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source = ProductCatalog.db");
+        optionsBuilder
+            .UseSqlite("Data Source = ProductCatalog.db")
+            .LogTo(Console.WriteLine, LogLevel.Information);
     }
 }
