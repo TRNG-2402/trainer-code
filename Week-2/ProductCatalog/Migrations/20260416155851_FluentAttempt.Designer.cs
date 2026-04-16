@@ -11,8 +11,8 @@ using ProductCatalog.Data;
 namespace ProductCatalog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260415174416_InitialDbCreate")]
-    partial class InitialDbCreate
+    [Migration("20260416155851_FluentAttempt")]
+    partial class FluentAttempt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,11 +32,32 @@ namespace ProductCatalog.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            Description = "Chargers and stuff",
+                            Name = "Electronics"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            Description = "Books and stuff",
+                            Name = "Books"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            Description = "Pans and stuff",
+                            Name = "Kitchen"
+                        });
                 });
 
             modelBuilder.Entity("ProductCatalog.Models.Product", b =>
@@ -71,6 +92,17 @@ namespace ProductCatalog.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Thinkpad Charger",
+                            Price = 1299.99m,
+                            Stock = 10
+                        });
                 });
 
             modelBuilder.Entity("ProductCatalog.Models.Tag", b =>
@@ -87,6 +119,13 @@ namespace ProductCatalog.Migrations
                     b.HasKey("TagId");
 
                     b.ToTable("Tags");
+
+                    b.HasData(
+                        new
+                        {
+                            TagId = 1,
+                            Name = "New Arrival"
+                        });
                 });
 
             modelBuilder.Entity("ProductTag", b =>
@@ -102,6 +141,13 @@ namespace ProductCatalog.Migrations
                     b.HasIndex("TagsTagId");
 
                     b.ToTable("ProductTag");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductsProductId = 1,
+                            TagsTagId = 1
+                        });
                 });
 
             modelBuilder.Entity("ProductCatalog.Models.Product", b =>
@@ -109,7 +155,7 @@ namespace ProductCatalog.Migrations
                     b.HasOne("ProductCatalog.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
