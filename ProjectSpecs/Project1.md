@@ -18,7 +18,7 @@ See [this api example for an "above and beyond" example for what we're going for
 - The application should persist data to a SQL Server DB
 - The application should communicate to DB via EF Core (Entity Framework Core)
 - Have 3 or more models
-- Models that demonstrate a relationship (1-1, 1-M, M-M)
+- Models that demonstrate the following relationships (1-M, M-M)
 
 ## Nice to Have
 
