@@ -12,7 +12,7 @@ See [this api example for an "above and beyond" example for what we're going for
 - ERD of your DB
 - The application should be ASP.NET Core application
 - The application should build and run
-- The application should have unit tests and at least 20% coverage (at least 5 unit tests that tests 5 different methods/functionality of your code)
+- The application should have unit tests and at least 20% coverage of the service layer methods (at least 5 unit tests that tests 5 different methods/functionality of your code)
 - The application should communicate via HTTP(s) (Must have POST, GET, DELETE)
 - The application should be RESTful API
 - The application should persist data to a SQL Server DB
