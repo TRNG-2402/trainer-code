@@ -9,6 +9,14 @@ namespace ProductCatalog.Data;
 //do deep configuration for your entities/models here, though you may not want to
 public class AppDbContext : DbContext
 {
+
+    // Since we're using Program.cs with AddDbContext to register our DbContext as a service to be managed by ASP during runtime
+    // we need to create a specific constructor to take in a DbContextOptions object
+    public AppDbContext() : base() {} // Creating an empty constructor (that call's the parent class constructor) to be safe
+
+    // This constructor takes in that options object, and passes it to the underlying DbContext constructor from the parent class
+    public AppDbContext(DbContextOptions options) : base(options) {}
+
     // We use our models to tell EF Core what tables to create inside of this dbcontext
     // class. If we set up our models (and their relationships) correctly, this is
     // all we'll need.
