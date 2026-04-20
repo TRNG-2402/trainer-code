@@ -20,12 +20,17 @@ public class AppDbContext : DbContext
 
     // We're going to override a method that comes in from DbContext
     // to tell it where to find (or create) our database
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder
-            .UseSqlite("Data Source = ProductCatalog.db")
-            .LogTo(Console.WriteLine, LogLevel.Information);
-    }
+
+    // I pulled in my old DbContext, but we no longer need to use OnConfiguring
+    // We will supply the connection string + database type inside of Program.cs
+    // not in this AppDbContext class
+
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     optionsBuilder
+    //         .UseSqlite("Data Source = ProductCatalog.db")
+    //         .LogTo(Console.WriteLine, LogLevel.Information);
+    // }
 
     // Level 1 Config: Conventions
     // Level 2 Config: Data Annotations

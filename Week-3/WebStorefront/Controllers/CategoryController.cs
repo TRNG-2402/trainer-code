@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductCatalog.Models;
 
 namespace ProductCatalog.Controllers;
 
@@ -34,6 +35,8 @@ public class CategoryController : ControllerBase
             // Even though this request is conceptually simple, I don't want 
             // to get in the habit of skipping layers
             // Controller <-> Service <-> Data <-> Database
+            return Ok(); // placeholder 200. Eventually, this 200 will also contain a list 
+            // with every category in my db
         }
         catch (Exception e)
         {   
