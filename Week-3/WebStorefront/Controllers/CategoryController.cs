@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.Models;
+using ProductCatalog.Services;
 
 namespace ProductCatalog.Controllers;
 
@@ -11,11 +12,13 @@ public class CategoryController : ControllerBase
     //Eventually here, I will create places to hold things like 
     // a CatergoryService object (injected at runtime) and maybe 
     // a logger
+    private readonly ICategoryService _categoryService;
 
-    public CategoryController()
+    public CategoryController(ICategoryService categoryService)
     {
         //Eventually, we will take in a CategoryService object as a constructor argument
         //and set it here
+        _categoryService = categoryService;
     }
 
     //Below the constructor... I will begin adding my Controller methods
@@ -35,7 +38,7 @@ public class CategoryController : ControllerBase
             // Even though this request is conceptually simple, I don't want 
             // to get in the habit of skipping layers
             // Controller <-> Service <-> Data <-> Database
-            return Ok(); // placeholder 200. Eventually, this 200 will also contain a list 
+            return await _categoryService.GetAllCategoriesAsync(); // placeholder 200. Eventually, this 200 will also contain a list 
             // with every category in my db
         }
         catch (Exception e)

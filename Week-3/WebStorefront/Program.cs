@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductCatalog.Data;
+using ProductCatalog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     //  1. What type of db provider are we using, for me its MS SQL Server
     //  2. Where is the server? (connection string)
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+
+// Category stuff
+builder.Services.AddScoped<ICategoryService, CategoryService>(); // Adding the service layer class
+builder.Services.AddScoped<ICategoryRepo, CategoryRepo>(); // Adding the data layer class
 
 //Once we have things like our DbContext, our Services, etc 
 //We will register them here, using builder.Services (or some specialty methods for things
