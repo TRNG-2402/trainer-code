@@ -39,4 +39,22 @@ public class CategoryRepo : ICategoryRepo
         return categoryToAdd;
     }
 
+    // GetCategoryByIdAsync - finds a specific category record in our db
+    // via its PK
+    public async Task<Category?> GetCategoryByIdAsync(int id)
+    {
+        // We can use FindAsync() to have EF do a SELECT by the PK
+        // If it doesn't find anything, it returns null
+        return await _context.Categories.FindAsync(id);
+    }
+
+    // DeleteCategoryAsync
+    public async Task DeleteCategoryAsync(Category categoryToDelete)
+    {
+        // First, we mark the entity/row's state as Deleted in EF Core's change tracker
+        _context.Categories.Remove(categoryToDelete);
+
+        // Then we call SaveChangesAsync() to execute the DELETE SQL operation
+        await _context.SaveChangesAsync();
+    }
 }

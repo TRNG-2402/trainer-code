@@ -51,4 +51,28 @@ public class CategoryService : ICategoryService // Remember to implement your in
 
     }
 
+    public async Task DeleteCategoryAsync(int id)
+    {
+        // We probably want to check this atleast a little bit
+        // PK's will (atleast since we offloaded their creation to EF Core)
+        // never be 0 or negative
+        if(id <= 0)
+            throw new ArgumentOutOfRangeException("ID must be greater than 0!");
+
+        // If the user gives us an int greater than 0 that doesn't correspond to any 
+        // existing row in our DB, we don't want to silently fail.
+        Category category = await _repo.GetCategoryByIdAsync(id);
+
+        // If my GetCategoryById method finds nothing, category will be null
+        // If so, alert the user
+        if(category is null)
+            throw new KeyNotFoundException("This category doesn't exist.");
+
+        // If we made it this far, take that found Category object
+        // pass it to the repo so it doesn't have to search again 
+        // and then just wait for that to resolve. No return needed here. 
+        await _repo.DeleteCategoryAsync(category);
+
+    }
+
 }

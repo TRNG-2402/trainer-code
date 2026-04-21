@@ -66,4 +66,26 @@ public class CategoryController : ControllerBase
         }
     }
 
+    // Deleting a Category via it's ID
+    // We need so little info (just an int) 
+    // that we don't need a DTO
+    // www.mysite.com/api/Category/{id} - This is the route, ASP pulls the int we need from the route
+    [HttpDelete("{categoryId}")]
+    public async Task<ActionResult> DeleteCategory(int categoryId)
+    {
+        // Just to show off Global Exception Handling in ASP.NET - COMING SOON!
+        // We won't even use a try-catch. 
+        try{
+            await _categoryService.DeleteCategoryAsync(categoryId);
+        } 
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+        
+        return NoContent(); // Returns a 204 No Content - things went smooth, but no data return
+
+    }
+
+
 }
