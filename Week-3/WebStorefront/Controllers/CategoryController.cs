@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductCatalog.DTOs;
 using ProductCatalog.Models;
 using ProductCatalog.Services;
 
@@ -49,6 +50,20 @@ public class CategoryController : ControllerBase
         }
     }
 
-
+    // POST to add a new Category, using our NewCategoryDTO
+    // This method returns a full Category... the actual new row 
+    // created in the DB, as our C# object. This isn't stricly required...
+    // but it is the expected behavior for a RESTful API
+    [HttpPost]
+    public async Task<ActionResult<Category>> CreateCategory(NewCategoryDTO newCategory)
+    {
+        try
+        {
+            return await _categoryService.CreateCategoryAsync(newCategory);
+        } catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
 }

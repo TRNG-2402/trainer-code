@@ -25,4 +25,18 @@ public class CategoryRepo : ICategoryRepo
         return result;
     }
 
+    public async Task<Category> CreateCategoryAsync(Category categoryToAdd)
+    {
+        _context.Categories.Add(categoryToAdd);
+        await _context.SaveChangesAsync();
+        
+        // I want to have my repo method return the newly created record.
+        // Including the generated PK, any timestamps that are created automatically,
+        // etc. How can I have EF Core do this for me?
+
+        // Trick question, when we call SaveChangesAsync() EF Core updates the local object
+        // in our case categoryToAdd, to reflect what was created or updated in the DB
+        return categoryToAdd;
+    }
+
 }

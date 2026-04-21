@@ -25,6 +25,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ICategoryService, CategoryService>(); // Adding the service layer class
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>(); // Adding the data layer class
 
+// Product stuff
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
+
 //Once we have things like our DbContext, our Services, etc 
 //We will register them here, using builder.Services (or some specialty methods for things
 // like a dbcontext)

@@ -1,4 +1,5 @@
 using ProductCatalog.Data;
+using ProductCatalog.DTOs;
 using ProductCatalog.Models;
 
 namespace ProductCatalog.Services;
@@ -31,5 +32,23 @@ public class CategoryService : ICategoryService // Remember to implement your in
         return result;
     }
 
+
+    public async Task<Category> CreateCategoryAsync(NewCategoryDTO newCategory)
+    {
+        // We will do the mapping from the NewCategoryDTO -> The actual Category object here
+        // traditionally I've seen it done in the Service layer
+
+        // Lets create a new Category object from the info in our DTO
+        // We will pass this to the repo layer for it to be inserted into the database
+        Category newCat = new Category();
+
+        // Mapping values from our DTO object to our new model
+        newCat.Name = newCategory.Name;
+        newCat.Description = newCategory.Description;
+
+        // Returning whatever comes back from my repo/data layer method 
+        return await _repo.CreateCategoryAsync(newCat);
+
+    }
 
 }
