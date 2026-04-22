@@ -1,4 +1,5 @@
 using ProductCatalog.Data;
+using ProductCatalog.DTOs;
 using ProductCatalog.Models;
 
 namespace ProductCatalog.Services;
@@ -31,5 +32,14 @@ public class ProductService : IProductService // Remember to implement your inte
         return result;
     }
 
+    public async Task AddTagToProductAsync(TagProductDTO updateInfo)
+    {
+        // We can imagine having some business logic here
+        // Perhaps if our schema/domain was larger, and we had more business rules 
+        // we could check for product discontinuations, edit locks, etc
+        await _repo.UpdateProductTagAsync(updateInfo);
+
+
+    }
 
 }

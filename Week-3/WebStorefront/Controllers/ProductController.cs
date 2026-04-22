@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductCatalog.DTOs;
 using ProductCatalog.Models;
 using ProductCatalog.Services;
 
@@ -14,7 +15,6 @@ public class ProductController : ControllerBase
 
     public ProductController(IProductService productService)
     {
-        
         _productService = productService;
     }
 
@@ -42,6 +42,24 @@ public class ProductController : ControllerBase
 
 
     //Add a PATCH to update a Product - changing it's category
+    // PATCH is for updating specific information on a resource/row
+    // PUT is for replacing a resource/row
+    [HttpPatch]
+    public async Task<ActionResult> AddTagToProduct(TagProductDTO updateInfo)
+    {
+        try
+        {
+            // We call the service layer (which then calls the repo layer)
+            await _productService.AddTagToProductAsync(updateInfo);
+        } catch (Exception e)
+        {
+            return BadRequest(e.Message); 
+        }
+
+        return NoContent(); // Since we aren't echoing back to updated object, we can return
+        // a 204 No Content success response
+    }
+
 
 
 
