@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Caching.Memory;
 using ProductCatalog.Data;
 using ProductCatalog.DTOs;
 using ProductCatalog.Models;
@@ -8,17 +9,33 @@ public class CategoryService : ICategoryService // Remember to implement your in
     // We will need a constructor eventually
     // And we will need to implement the ICategoryService interface
     private readonly ICategoryRepo _repo;
+    private readonly IMemoryCache _cache;
 
-    public CategoryService(ICategoryRepo repo)
+    public CategoryService(ICategoryRepo repo, IMemoryCache cache)
     {
         _repo = repo;
+        _cache = cache;
     }
+
+    // We will just hardcode our AllCategoriesKey - since this will never change
+    // We aren't going to generate a new string based on some date+time+rand logic
+    // So I'll put this below the constructor
+    private const string AllCategoriesKey = "categories:all";
 
     //Get all categories. This method is called by the controller
     //And it itself calls upon the repo layer
     public async Task<List<Category>> GetAllCategoriesAsync()
     {
         // Creating a list called result to hold whatever we get back from the data layer
+
+        if(_cache.TryGetValue(AllCategoriesKey, out List<Category>? cachedCategories) && cachedCategories is not null)
+        {
+            return cachedCategories;
+        }
+
+        // Key: AllCategoriesKey
+        // Value: List of all my categories
+
         List<Category> result = await _repo.GetAllCategoriesAsync();
 
         // Doing... whatever we need to do here. 
@@ -28,6 +45,10 @@ public class CategoryService : ICategoryService // Remember to implement your in
         //Maybe a basic check, if somehow we didn't get back any categories 
         if(result is null)
             throw new NullReferenceException("Somehow... no categories?");
+
+        //If we made it this far, then cache is not yet set OR was set and is now stale (outdated)
+        //So set it here
+        _cache.Set(AllCategoriesKey, result, TimeSpan.FromSeconds(30));
 
         return result;
     }
@@ -47,7 +68,14 @@ public class CategoryService : ICategoryService // Remember to implement your in
         newCat.Description = newCategory.Description;
 
         // Returning whatever comes back from my repo/data layer method 
-        return await _repo.CreateCategoryAsync(newCat);
+        Category createdCategory =  await _repo.CreateCategoryAsync(newCat);
+
+        // Splitting the call to the repo layer and the return to buy us time
+        // AFTER the repo layer method succeeds but BEFORE the return 
+        // We want to manually invalidate Cache
+        _cache.Remove(AllCategoriesKey);
+
+        return createdCategory;
 
     }
 
@@ -72,6 +100,10 @@ public class CategoryService : ICategoryService // Remember to implement your in
         // pass it to the repo so it doesn't have to search again 
         // and then just wait for that to resolve. No return needed here. 
         await _repo.DeleteCategoryAsync(category);
+
+        // On delete the DB state doesn't match cache anymore
+        // so we invalidate as well
+        _cache.Remove(AllCategoriesKey);
 
     }
 

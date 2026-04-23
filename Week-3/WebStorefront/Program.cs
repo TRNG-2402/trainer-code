@@ -13,6 +13,13 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(); // Adding Swagger
 
+// Lets add our caching - we'll start with ResponseCaching
+builder.Services.AddResponseCaching();
+
+// Now lets add MemoryCache
+builder.Services.AddMemoryCache(); // caching on server memory! Can be (often is) used alongside
+// Response caching
+
 //Once we've created our DbContext class, we've added our connection string (with password!) to 
 // appsettings.development.json, and we brought our models in (or created them!)
 // we register our dbcontext with the builder.
@@ -55,6 +62,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger(); // Serves the JSON at /swagger/v1/swagger.json
     app.UseSwaggerUI(); // Serves the UI at /swagger
 }
+
+app.UseResponseCaching(); // This must come before UseAuthorization + MapControllers - why?
+// Everything that runs after like 62, can contribute to the response. 
+
 
 app.UseAuthorization();
 

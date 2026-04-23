@@ -28,7 +28,14 @@ public class CategoryController : ControllerBase
     //Our controller methods are NEVER void. They always return 
     //atleast a Task that is wrapping an ActionResult. 
     // public async Task<ActionResult<>>
+
+    // Notes on the ResponseCache Attribute:
+    // Duration, delineated in seconds. How long should the client hold this info
+    // Location Any: Allow client or any proxies to cache this
+    // NoStore = false: we DO want to store it.
+
     [HttpGet]
+    [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, NoStore = false)]
     public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
     {
         //I almost always (as in 100% of the time, cant think of a reason not to)
