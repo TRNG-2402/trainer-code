@@ -33,21 +33,21 @@ public class CategoryController : ControllerBase
     {
         //I almost always (as in 100% of the time, cant think of a reason not to)
         //want to wrap the actual logic of my controller methods in a try-catch
-        try
-        {
+        // try
+        // {
             // In here, I will have a call to my service layer method. 
             // Even though this request is conceptually simple, I don't want 
             // to get in the habit of skipping layers
             // Controller <-> Service <-> Data <-> Database
             return await _categoryService.GetAllCategoriesAsync(); // placeholder 200. Eventually, this 200 will also contain a list 
             // with every category in my db
-        }
-        catch (Exception e)
-        {   
+        // }
+        // catch (Exception e)
+        // {   
             //If we hit an exception (that can be thrown manually in some deeper layer
             // take that error message, and stick it in a 400 family HTTP response)
-            return BadRequest(e.Message);
-        }
+            //return BadRequest(e.Message);
+        //}
     }
 
     // POST to add a new Category, using our NewCategoryDTO
@@ -57,13 +57,13 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Category>> CreateCategory(NewCategoryDTO newCategory)
     {
-        try
-        {
+        // try
+        // {
             return await _categoryService.CreateCategoryAsync(newCategory);
-        } catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        // } catch (Exception e)
+        // {
+        //     return BadRequest(e.Message);
+        // }
     }
 
     // Deleting a Category via it's ID
@@ -75,13 +75,13 @@ public class CategoryController : ControllerBase
     {
         // Just to show off Global Exception Handling in ASP.NET - COMING SOON!
         // We won't even use a try-catch. 
-        try{
+        // try{
             await _categoryService.DeleteCategoryAsync(categoryId);
-        } 
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        // } 
+        // catch (Exception e)
+        // {
+        //     return BadRequest(e.Message);
+        // }
         
         return NoContent(); // Returns a 204 No Content - things went smooth, but no data return
 

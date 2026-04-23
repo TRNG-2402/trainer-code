@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductCatalog.Data;
+using ProductCatalog.Middleware;
 using ProductCatalog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,10 @@ builder.Services.AddScoped<IProductRepo, ProductRepo>();
 // like a dbcontext)
 
 var app = builder.Build();
+
+// Telling app to use our middleware
+// This middleware runs first - why?
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
