@@ -26,6 +26,9 @@ public class AppDbContext : DbContext
 
     public DbSet<Tag> Tags { get; set; }
 
+    public DbSet<User> Users { get; set; }   // NEW FOR DEMO
+
+
     // We're going to override a method that comes in from DbContext
     // to tell it where to find (or create) our database
 
@@ -47,6 +50,18 @@ public class AppDbContext : DbContext
     // Category Entity
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        // User entity - authentication source of truth.
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.UserId);
+
+            // Username must be unique so we can safely use it as a lookup key
+            // during login. EF creates a real unique index in the DB.
+            entity.HasIndex(u => u.Username).IsUnique();
+        });
+
+
         // Lets configure the One to Many
         // Between Categories and Products
         // In order to do this, we need to set things for both entities.
@@ -132,6 +147,23 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Tag>().HasData(
             new Tag { TagId = 1, Name = "New Arrival" }
+        );
+
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                UserId = 1,
+                Username = "alice",
+                PasswordHash = "secret",   // DEMO ONLY - hash in production
+                Role = "User"
+            },
+            new User
+            {
+                UserId = 2,
+                Username = "admin",
+                PasswordHash = "admin",    // DEMO ONLY - hash in production
+                Role = "Admin"
+            }
         );
 
 
