@@ -84,7 +84,7 @@ dotnet ef database update
 | **Authentication** | Who are you? | **401 Unauthorized** |
 | **Authorization** | What are you allowed to do? | **403 Forbidden** |
 
-### The pipeline you're building
+### The Middleware pipeline you're building
 
 ```
 Request
@@ -177,6 +177,7 @@ Add a `Jwt` section as a sibling of `ConnectionStrings`:
 ```
 
 > **Why these three values?**
+>
 > - **`Key`** — the symmetric secret used to sign every token. **Must be ≥ 32 bytes / 256 bits** for HS256. Anything shorter and the framework throws `IDX10653` at startup. The example above is 47 characters — safe.
 > - **`Issuer`** — embedded in every token as the `iss` claim. The validator rejects tokens whose `iss` doesn't match.
 > - **`Audience`** — embedded as `aud`. Same idea: rejects tokens minted for other audiences.
@@ -844,7 +845,7 @@ Expected: **200 OK** with a body shaped like:
 
 ### Test 4 — Authorize in Swagger
 
-Click the green **Authorize** padlock at the top right. Paste the token (no `Bearer ` prefix — the security definition adds it). Click **Authorize**. The padlock turns closed.
+Click the green **Authorize** padlock at the top right. Paste the token (no `Bearer` prefix — the security definition adds it). Click **Authorize**. The padlock turns closed.
 
 > **Optional side quest:** paste the token at `jwt.io`. You'll see the decoded payload — `nameid`, `unique_name`, `role`, `iss`, `aud`, `exp`. None of it is encrypted. The signature is what prevents tampering, not secrecy.
 
@@ -929,9 +930,9 @@ Expected: **401** with `WWW-Authenticate: Bearer error="invalid_token"` in the r
 | **`IDX10653` at startup** | Your `Jwt:Key` in `appsettings.Development.json` is shorter than 32 bytes. The error message confusingly mentions "128 bits" — the practical floor is 32 bytes / 256 bits for HS256. |
 | **Login itself returns 401** | `AuthController` is missing `[AllowAnonymous]`. (Already on the skeleton, but worth checking.) |
 | **Swagger Authorize doesn't show a padlock** | Step 8b wasn't applied — the security definition isn't registered. |
-| **Swagger sends the token but you still get 401** | You may have pasted `Bearer eyJ...` instead of just the raw `eyJ...`. The Swagger security definition adds the `Bearer ` prefix itself. (Curl users still write `-H "Authorization: Bearer eyJ..."`.) |
+| **Swagger sends the token but you still get 401** | You may have pasted `Bearer eyJ...` instead of just the raw `eyJ...`. The Swagger security definition adds the `Bearer` prefix itself. (Curl users still write `-H "Authorization: Bearer eyJ..."`.) |
 | **Tokens whose `exp` passed are still accepted** | `ClockSkew` is at the default 5-minute grace. We set it to `TimeSpan.Zero` in Step 8c — confirm. |
-| **Login returns 401 even with the correct password** | Plaintext string compare is case- and whitespace-sensitive. `Alice` ≠ `alice`; `secret ` (trailing space) ≠ `secret`. |
+| **Login returns 401 even with the correct password** | Plaintext string compare is case- and whitespace-sensitive. `Alice` ≠ `alice`; `secret` (trailing space) ≠ `secret`. |
 | **Login returns 401 and you think creds are right** | Did the `Users` table actually get created? Run `SELECT * FROM Users`. If "Invalid object name 'Users'", you skipped **Step 0** — run `dotnet ef migrations add AddUserEntity` then `dotnet ef database update`. The 401 lies — it'll look like "wrong credentials" but it's really "no table." |
 
 ---
