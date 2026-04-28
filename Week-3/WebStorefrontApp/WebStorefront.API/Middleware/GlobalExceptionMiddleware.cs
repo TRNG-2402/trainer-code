@@ -70,6 +70,9 @@ public class GlobalExceptionMiddleware
             case NullReferenceException _:
                 statusCode = 404;
                 break;
+            case UnauthorizedAccessException _:
+                statusCode = 401;
+                break;
             default:
                 statusCode = 500; //500 error
                 break;

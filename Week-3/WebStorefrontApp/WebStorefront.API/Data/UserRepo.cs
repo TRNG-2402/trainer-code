@@ -12,4 +12,13 @@ public class UserRepo : IUserRepo
         _context = context;
     }
 
+    public async Task<User?> GetByUsernameAsync(string username)
+    {
+        // AsNoTracking: we're only reading, never updating from this query.
+        // Skipping change-tracking is a tiny perf win and makes the intent clear.
+        return await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Username == username);
+    }
+
 }

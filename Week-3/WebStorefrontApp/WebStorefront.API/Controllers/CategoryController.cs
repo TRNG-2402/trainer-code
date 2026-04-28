@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.DTOs;
 using ProductCatalog.Models;
 using ProductCatalog.Services;
+using Microsoft.AspNetCore.Authorization; // NEW 
+
 
 namespace ProductCatalog.Controllers;
 
 // www.someurl.com/api/Category/whatever/the/rest/of/the/route
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]   // NEW - every action requires a valid token by default
 public class CategoryController : ControllerBase
 {
     //Eventually here, I will create places to hold things like 
@@ -78,6 +81,7 @@ public class CategoryController : ControllerBase
     // that we don't need a DTO
     // www.mysite.com/api/Category/{id} - This is the route, ASP pulls the int we need from the route
     [HttpDelete("{categoryId}")]
+    [Authorize(Roles = "Admin")] // NEW - tightens the class-level [Authorize]
     public async Task<ActionResult> DeleteCategory(int categoryId)
     {
         // Just to show off Global Exception Handling in ASP.NET - COMING SOON!

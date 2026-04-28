@@ -21,4 +21,13 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    // POST /api/Auth/login
+    // No try/catch - UnauthorizedAccessException bubbles to GlobalExceptionMiddleware
+    // and becomes a proper 401 with the structured JSON body.
+    [HttpPost("login")]
+    public async Task<ActionResult<TokenResponseDTO>> Login(LoginDTO loginDto)
+    {
+        return await _authService.LoginAsync(loginDto);
+    }
+
 }

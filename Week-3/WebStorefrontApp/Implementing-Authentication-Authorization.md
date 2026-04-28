@@ -551,20 +551,10 @@ builder.Services.AddSwaggerGen(options =>
         Description  = "Paste the JWT from /api/Auth/login. No 'Bearer ' prefix needed."
     });
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id   = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+    options.AddSecurityRequirement(doc => new OpenApiSecurityRequirement                     
+    {                                                                           
+        { new OpenApiSecuritySchemeReference("Bearer", doc), new List<string>() }            
+    });  
 });
 ```
 
@@ -690,7 +680,7 @@ Request
 
 ## Step 10 — Decorate `CategoryController`
 
-Open `Controllers/CategoryController.cs`. **Critical:** all the existing teaching comments — including the commented-out `// try` / `// catch` blocks and the `// COMING SOON!` note — must stay intact. You're only adding `[Authorize]` attributes.
+Open `Controllers/CategoryController.cs`.
 
 Add one `using` at the top:
 
@@ -888,6 +878,16 @@ DELETE /api/Category/1
 
 Expected: **204 No Content**. (Or, if you already deleted id 1 in a previous run, **404** with the structured JSON body from `GlobalExceptionMiddleware` — that's also a win, because it proves the middleware still formats non-auth errors correctly.)
 
+> **If you instead see a 500 with a `DbUpdateException` wrapping `SqlException 547 — FK_Products_Categories_CategoryId`,** that's not an auth bug. Category 1 has child rows (the seeded `Thinkpad Charger` lives in `CategoryId = 1`), and the Product→Category FK is configured `OnDelete(DeleteBehavior.Restrict)` in `AppDbContext.OnModelCreating`. SQL Server refuses to orphan the child row, EF surfaces the `DbUpdateException`, and the global middleware's `default` arm maps it to 500. Pick whichever fix matches what you want to demonstrate:
+>
+> | Fix | What it shows |
+> |---|---|
+> | `DELETE FROM Products WHERE CategoryId = 1;` then retry | The auth flow is fine — only the FK was in the way. Fastest unblock for the demo. |
+> | Target an empty Category instead (`DELETE /api/Category/2` or `/3`) | Same idea, no SQL surgery — categories 2 and 3 have no seeded children. |
+> | Change the FK to `OnDelete(DeleteBehavior.Cascade)` in `AppDbContext`, then `dotnet ef migrations add CascadeCategory` + `dotnet ef database update` | Some of you wired this in your own projects. Cascade tears down the children with the parent — cheap, *destructive*, fine for a demo, dangerous in prod. |
+>
+> The auth wiring itself is correct — Step 7's middleware is doing exactly what it should, and the 500 here is honest: the system genuinely doesn't know what to do with an unhandled `DbUpdateException` until you pick one of the rules above.
+
 ### Test 8 — Bad credentials
 
 Request:
@@ -934,6 +934,7 @@ Expected: **401** with `WWW-Authenticate: Bearer error="invalid_token"` in the r
 | **Tokens whose `exp` passed are still accepted** | `ClockSkew` is at the default 5-minute grace. We set it to `TimeSpan.Zero` in Step 8c — confirm. |
 | **Login returns 401 even with the correct password** | Plaintext string compare is case- and whitespace-sensitive. `Alice` ≠ `alice`; `secret` (trailing space) ≠ `secret`. |
 | **Login returns 401 and you think creds are right** | Did the `Users` table actually get created? Run `SELECT * FROM Users`. If "Invalid object name 'Users'", you skipped **Step 0** — run `dotnet ef migrations add AddUserEntity` then `dotnet ef database update`. The 401 lies — it'll look like "wrong credentials" but it's really "no table." |
+| **`DELETE /api/Category/1` as admin returns 500 with `DbUpdateException` / `SqlException 547`** | FK guard, not auth. The seeded `Product 1` references `CategoryId = 1` and the Product→Category FK is `Restrict`. See the note inside Test 7 for fix options. |
 
 ---
 

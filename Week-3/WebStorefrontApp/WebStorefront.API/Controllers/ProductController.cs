@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization; // NEW
 using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.DTOs;
 using ProductCatalog.Models;
@@ -8,6 +9,7 @@ namespace ProductCatalog.Controllers;
 // www.someurl.com/api/Product/whatever/the/rest/of/the/route
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]                    // NEW - default closed
 public class ProductController : ControllerBase
 {
    
@@ -19,6 +21,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous] // NEW - punch a hole in class level Auth requirement for public browsing
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
         //I almost always (as in 100% of the time, cant think of a reason not to)

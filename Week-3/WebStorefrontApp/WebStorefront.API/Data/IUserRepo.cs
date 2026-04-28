@@ -7,5 +7,5 @@ namespace ProductCatalog.Data;
 // sees a DbContext. This keeps the service layer free of query code.
 public interface IUserRepo
 {
-    
+    Task<User?> GetByUsernameAsync(string username);
 }
