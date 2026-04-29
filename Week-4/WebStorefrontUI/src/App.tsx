@@ -1,122 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
+import ProductCard from './components/ProductCard' // Bringing in our ProductCard component
+import type { Product } from './types/Product' // Bringing in our Product
+
+// For now, in lieu of making actual API calls
+// We're going to hardcode a list of products
+// Once we can ask our API for the real list that's in the DB we'll stop using this list
+
+const products: Product[] = [
+  {
+    productId : 1,
+    name: 'Thinkpad Charger',
+    description: 'USB-C Charger',
+    price: 40.00,
+    stock: 10,
+    createdAt: '2026-01-15',
+    categoryId: 1
+  },
+  {
+    productId : 2,
+    name: 'Mechanical Keyboard',
+    description: 'MX Red Switch, usb-c',
+    price: 140.00,
+    stock: 2,
+    createdAt: '2026-01-15',
+    categoryId: 1
+  },
+  {
+    productId : 3,
+    name: 'Standing desk mat',
+    description: null,
+    price: 30.00,
+    stock: 0,
+    createdAt: '2026-01-15',
+    categoryId: 3
+  }
+];
 
 function App() {
   
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <main>
+      <h1>WebStoreFront</h1>
+      <section>
+        {/* For every product in the list, we need to render a ProductCard */}
+        { // Map is a function that iterates over an array, and for each element in the array,
+          // it does "something" - we need to give it a function to apply or run for each product object
+          // that we refer to as p in this case. React also needs us to pass in a key, or it'll complain
+          // because otherwise it can't make sure its not rendering duplicates. 
+          products.map((p) => (
+            <ProductCard key={p.productId} product={p}/>
+          ))}
+
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 

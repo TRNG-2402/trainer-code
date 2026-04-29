@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Product } from '../types/Product'
+import styles from './ProductCard.module.css'
 
 // Because this is typescript we need to give our "arguments" to our function components,
 // in React referred to as props, a type
@@ -16,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     // The return of a React function component is... things to render. You can think of JSX/TSX
     // as an extension of HTML that lets you call upon TS code inside of it, as needed
   return (
-    <div>
+    <div className={styles.card}>
         <h3>{product.name}</h3>
         {/* 
             This is a comment in my TSX return - kinda extra but we gotta it this way. 
@@ -33,7 +34,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             Below we use an in-line if expression (coming from JS/TS)
             condition ? thing-if-true : thing-if-false
             */}
-        <p>{product.stock > 0 ? `${product.stock}` : 'Out of Stock'}</p>
+        <p className={product.stock === 0 ? styles.outOfStock : undefined}>
+            {product.stock > 0 ? `${product.stock}` : 'Out of Stock'}
+        </p>
     </div>
   )
 }
