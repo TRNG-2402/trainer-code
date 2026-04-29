@@ -1,6 +1,9 @@
 import './App.css'
 import ProductCard from './components/ProductCard' // Bringing in our ProductCard component
 import type { Product } from './types/Product' // Bringing in our Product
+import SearchBar from './components/SearchBar';
+import { useState } from 'react'; // Bringing in our State hook
+import EmptyState from './components/EmptyState';
 
 // For now, in lieu of making actual API calls
 // We're going to hardcode a list of products
@@ -37,21 +40,40 @@ const products: Product[] = [
 ];
 
 function App() {
+
+  // Lets add State to our App
+  // We will use state to hold user input from a searchbar
+  // UseState needs us to provide a Tuple
+  // whatToHold, Setter - we can also provide some initial value (if we need to) inside the useState function call.
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // We want to break out the filtering outside of the return
+  // mostly to keep to keep things clean/readable
+  const filtered = products.filter((p) => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   
   return (
     <main>
       <h1>WebStoreFront</h1>
-      <section>
-        {/* For every product in the list, we need to render a ProductCard */}
-        { // Map is a function that iterates over an array, and for each element in the array,
-          // it does "something" - we need to give it a function to apply or run for each product object
-          // that we refer to as p in this case. React also needs us to pass in a key, or it'll complain
-          // because otherwise it can't make sure its not rendering duplicates. 
-          products.map((p) => (
-            <ProductCard key={p.productId} product={p}/>
-          ))}
+      <SearchBar value={searchTerm} onSearchChange={setSearchTerm} />
+      {/* Using a ternary to render separate sets of components/data based on some condition */}
+      {
+        filtered.length === 0 ? (
+          <EmptyState message={`No products match "${searchTerm}`} />
+        ) : (
+          <section>
+            {/* For every product in the list, we need to render a ProductCard */}
 
-      </section>
+            {// Map is a function that iterates over an array, and for each element in the array,
+            // it does "something" - we need to give it a function to apply or run for each product object
+            // that we refer to as p in this case. React also needs us to pass in a key, or it'll complain
+            // because otherwise it can't make sure its not rendering duplicates.
+              filtered.map((p) => (
+                <ProductCard key={p.productId} product={p}/>
+              ))}
+          </section>
+        )}
     </main>
   )
 }
