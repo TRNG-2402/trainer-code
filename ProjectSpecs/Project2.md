@@ -7,7 +7,7 @@ For P2, you and your team will create a full stack web application: separate fro
 ## Requirements
 
 - Application Must build and run
-- Unit Testing (70% branch coverage for Services and Utilities/Business Logic)
+- Unit Testing (70% branch coverage for Services and Utilities/Business Logic + 3-5 React tests for front end)
 - CI/CD Pipeline on Github Actions
 - Implement Secure Authentication (user login / registration with password hashing.)
 - Frontend
