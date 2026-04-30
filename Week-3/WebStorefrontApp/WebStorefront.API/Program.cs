@@ -93,6 +93,17 @@ builder.Services.AddScoped<IProductRepo, ProductRepo>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+// Somewhere in the services registration area (order doesn't matter here like in the middleware pipeline
+// area below)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("WebStorefrontUI", policy => 
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
+
 //Once we have things like our DbContext, our Services, etc 
 //We will register them here, using builder.Services (or some specialty methods for things
 // like a dbcontext)
@@ -122,6 +133,8 @@ if (app.Environment.IsDevelopment())
 app.UseResponseCaching(); // This must come before UseAuthorization + MapControllers - why?
 // Everything that runs after like 62, can contribute to the response. 
 
+// Somewhere BEFORE useAuthentication we need to insert our app.UseCors()
+app.UseCors("WebStorefrontUI");
 
 app.UseAuthentication();   // NEW - must run BEFORE UseAuthorization
 
