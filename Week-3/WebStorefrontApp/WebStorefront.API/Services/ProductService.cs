@@ -38,8 +38,11 @@ public class ProductService : IProductService // Remember to implement your inte
         // Perhaps if our schema/domain was larger, and we had more business rules 
         // we could check for product discontinuations, edit locks, etc
         await _repo.UpdateProductTagAsync(updateInfo);
-
-
     }
+
+    public async Task<Product?> GetByIdAsync(int id)
+{
+    return await _repo.GetByIdAsync(id);
+}
 
 }

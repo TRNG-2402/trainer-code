@@ -56,4 +56,9 @@ public class ProductRepo : IProductRepo
 
     }
 
+    public async Task<Product?> GetByIdAsync(int id)
+    {
+        return await _context.Products.FindAsync(id);
+    }
+
 }

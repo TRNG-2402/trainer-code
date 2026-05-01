@@ -11,5 +11,10 @@ export const productService = {
         const response = await api.get<Product[]>('/Product');
         return response.data; // returning the body of the response, because response also has
         // things like the return headers, auth stuff, etc. 
+    },
+    // Sends GET to http://localhost:5247/api/Product/{id}
+    async getById(id: number): Promise<Product> {
+        const response = await api.get<Product>(`/Product/${id}`);
+        return response.data;
     }
 }

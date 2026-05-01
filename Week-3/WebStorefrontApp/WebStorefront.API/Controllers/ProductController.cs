@@ -63,7 +63,13 @@ public class ProductController : ControllerBase
         // a 204 No Content success response
     }
 
-
-
+    // NEW: Get Product by product ID
+    [HttpGet("{id}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<Product>> GetProduct(int id)
+    {
+        Product? product = await _productService.GetByIdAsync(id);
+        return product is null ? NotFound() : Ok(product);
+    }
 
 }

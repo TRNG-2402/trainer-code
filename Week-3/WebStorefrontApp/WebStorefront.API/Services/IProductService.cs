@@ -9,4 +9,5 @@ public interface IProductService
     //Add my controller methods
     Task<List<Product>> GetAllProductsAsync();
     Task AddTagToProductAsync(TagProductDTO updateInfo);
+    Task<Product?> GetByIdAsync(int id);
 }

@@ -8,4 +8,6 @@ public interface IProductRepo
     Task<List<Product>> GetAllProductsAsync();
 
     Task UpdateProductTagAsync(TagProductDTO updateInfo);
+
+    Task<Product?> GetByIdAsync(int id);
 }

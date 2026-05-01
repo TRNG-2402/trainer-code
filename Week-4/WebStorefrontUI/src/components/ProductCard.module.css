@@ -14,3 +14,5 @@
   color: #c00;
   font-weight: 600;
 }
+
+.cardLink { text-decoration: none; color: inherit; }
