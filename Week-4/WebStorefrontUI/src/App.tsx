@@ -6,6 +6,7 @@ import Categories from './pages/Categories'
 import Login from './pages/Login'
 import ProductDetail from './pages/ProductDetail'
 import NavBar from './components/NavBar'
+import NotFound from './pages/NotFound'
 
 
 // For now, in lieu of making actual API calls
@@ -55,6 +56,7 @@ function App() {
         <Route path='/products/:productId' element={<ProductDetail />} />
         <Route path='/categories' element={<Categories />} />
         <Route path='/login' element={<Login />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </main>
   )
