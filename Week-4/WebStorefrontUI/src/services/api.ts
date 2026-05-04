@@ -10,3 +10,20 @@ export const api = axios.create({
         'Content-Type': 'application/json',
     },
 });
+
+// Coming back full circle, since we now have access to a token (via localStorage) we can 
+// have our api axios object attack the token as a Bearer token for us automatically on every 
+// outgoing request. If theres no token, it wont break - it'll just attach nothing. 
+api.interceptors.request.use((config) => {
+    
+    //Grab token from localStorage
+    const token = localStorage.getItem('token');
+
+    // Check token
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+
+});
