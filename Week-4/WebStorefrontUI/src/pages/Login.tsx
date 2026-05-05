@@ -56,9 +56,35 @@ export default function Login() {
   };
 
   return (
-    <div>
-        <h2>Login</h2>
-        <p>Login lands in a later demo!</p>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <h2>Login</h2>
+      <div>
+        <label>
+          Username:{' '}
+          <input 
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Password:{' '}
+          <input 
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} 
+          />
+        </label>
+      </div>
+      {/* 
+        Underneath our second div, but still inside the form, 
+        we're going to use basic conditional render - if there is an error
+        render a paragraph with the error contents in red. Just to alert the user.
+      */}
+      {error && <p style={{color: 'red'}}>{error}</p>}
+      <button type='submit'>Log in</button>
+    </form>
   )
 }

@@ -1,2 +1,14 @@
 .nav  { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #eee; margin-bottom: 1rem; }
 .link { text-decoration: none; color: #0077cc; }
+
+.greeting {
+  margin-left: auto;
+  color: #555;
+}
+.linkButton {
+  background: none;
+  border: none;
+  color: #0077cc;
+  cursor: pointer;
+  font: inherit;
+}
