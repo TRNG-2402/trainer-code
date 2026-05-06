@@ -24,6 +24,7 @@ export default function NavBar() {
         <Link to="/" className={styles.link}>Home</Link>
         <Link to="/products" className={styles.link}>Products</Link>
         <Link to="/categories" className={styles.link}>Categories</Link>
+        <Link to="/cart" className={styles.link}>Cart</Link>
         
         { /* Based on whether a user is logged in (we check isAuthenticated for this) 
             we can render either the login link or a logout button*/

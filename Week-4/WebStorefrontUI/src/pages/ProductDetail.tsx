@@ -1,8 +1,8 @@
-import React from 'react'
 import { useEffect, useState } from 'react'
 import { productService } from '../services/productService'
 import { Link, useParams } from 'react-router-dom'
 import type { Product } from '../types/Product'; // Bringing in our Product type
+import AddToCartButton from '../components/AddToCartButton';
 
 export default function ProductDetail() {
 
@@ -41,6 +41,7 @@ export default function ProductDetail() {
         <p>{product.description ?? 'No description.'}</p>
         <p>Price: <strong>${product.price.toFixed(2)}</strong></p>
         <p>Stock: {product.stock}</p>
+        <AddToCartButton product={product} />
         <Link to="/products"> Back to products</Link>
     </article>
   )

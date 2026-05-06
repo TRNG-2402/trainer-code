@@ -9,6 +9,7 @@ import NavBar from './components/NavBar'
 import NotFound from './pages/NotFound'
 import CategoryProducts from './pages/CategoryProducts'
 import ProtectedRoute from './components/ProtectedRoute'
+import Cart from './pages/Cart'
 
 
 // For now, in lieu of making actual API calls
@@ -86,6 +87,7 @@ function App() {
           }
         />
 
+        <Route path='/cart' element={<Cart />} />
         <Route path='/login' element={<Login />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
