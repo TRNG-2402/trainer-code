@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useMemo, type ReactNode } from "react";
 import type { LoginRequest, AuthUser } from "../types/Auth";
 import { authService } from "../services/authService";
 import { jwtDecode } from "jwt-decode";

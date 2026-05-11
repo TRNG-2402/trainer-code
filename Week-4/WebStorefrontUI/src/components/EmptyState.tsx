@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 // We will take in some props for this, so we have to type them
 interface EmptyStateProps {

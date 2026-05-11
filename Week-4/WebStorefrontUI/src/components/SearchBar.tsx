@@ -1,4 +1,4 @@
-import React from 'react'
+
 import styles from './SearchBar.module.css'
 
 // We can pass in anything as props

@@ -1,0 +1,34 @@
+# This is our Dockerfile, it will serve as the recipe for our Image.
+# Once we have a valid Dockerfile, we can call docker build
+# And get an image. Thing of that Image like a class in C#, that we can then
+# create Containers of - The relationship between Images and Containers
+# is akin to classes and individual objects of that class.
+
+# We start off with FROM to select a base image
+# This is the baseline software and dependencies needed for that software to run our app.
+# For our Front End, for now we'll do this as simply as possible, starting with node
+# For your backend, you'd use like, a .NET 10 image or something
+FROM node:20-alpine
+
+# Next, we give our Dockerfile a Working Directory on our container to do its work in
+WORKDIR /app
+# Now any commands we execute in the dockerfile will be targeting/happening inside of 
+# The ./app directory of the CONTAINER's file system. 
+
+# Copy lets us move stuff from OUR file system, into the container's file system.
+# The final argument (if you choose to copy multiple items at once) is the CONTAINER file system
+# destination for what you're trying to copy over
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Once we have our dependencies installed... we can then copy over our code
+COPY . . 
+RUN npm run build
+
+# Vite preview is a dev only server - it should NOT be used for production
+# But for this first part of our demo, we're intentionally going to use it. 
+# Refactor incoming post break. 
+
+# Exposing a port so we can visit our frontend from our Host OS browser. 
+EXPOSE 5173
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]

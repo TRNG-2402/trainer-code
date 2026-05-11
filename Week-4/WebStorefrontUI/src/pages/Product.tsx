@@ -1,4 +1,4 @@
-import React from 'react'
+
 import ProductCard from '../components/ProductCard'; // Bringing in our ProductCard component
 import type { Product } from '../types/Product'; // Bringing in our Product
 import SearchBar from '../components/SearchBar';

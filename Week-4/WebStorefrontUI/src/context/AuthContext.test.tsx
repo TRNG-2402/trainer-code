@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { AuthProvider, useAuth } from "./AuthContext";
-import { authService } from "../services/authService";
 
 
 // Our AuthProvider makes API calls using the authService  

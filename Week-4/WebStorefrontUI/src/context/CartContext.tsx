@@ -89,6 +89,8 @@ export function cartReducer(state: CartState, action: CartAction) {
             // Like any switch we need a default case. We can actually have TS enforce 
             // that if somebody adds a new potential action to the CartAction Type, it MUST
             // be handled here. And TS will enforce this for us
+
+            // @ts-ignore
             const _exhaustive: never = action;
             return state;
         }

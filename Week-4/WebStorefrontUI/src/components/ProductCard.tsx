@@ -1,4 +1,4 @@
-import React from 'react'
+
 import type { Product } from '../types/Product'
 import styles from './ProductCard.module.css'
 import { Link } from 'react-router-dom';
