@@ -13,11 +13,11 @@ For P2, you and your team will create a full stack web application: separate fro
 - Frontend
   - React
   - Styling: plain CSS, Tailwind, bootstrap, etc.
-  - Hosted on Azure
+  - Hosted on Azure - MOVED TO STRETCH
 - Backend
   - ASP.NET API
   - Docker containerized
-  - Hosted on Azure
+  - Hosted on Azure - MOVED TO STRETCH
 - SQLServer DB hosted on Azure
 
 ## Proposal (Due EOD: 05/05/26)
