@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
@@ -47,11 +48,26 @@ export default function Login() {
       await login({username, password});
       navigate('/'); // If we log in successfully, redirect to the home page.
 
-    } catch (err: any) {
+    } catch (err) {
       // If we get a 401 error, we know that our API will return something with a { status, message }
       // Surface this to the user in the UI - for now inside of this catch we do our part
       // by setting the error state with the message via setError
-      setError(err.response?.data?.message ?? 'Login failed');
+      //
+      // STUDENT NOTE: We previously typed this as `catch (err: any)`, which tripped the
+      // `@typescript-eslint/no-explicit-any` rule. `any` opts out of type checking entirely —
+      // we lose the safety net TypeScript is supposed to give us. In modern TypeScript, the
+      // type of a `catch` parameter is `unknown` by default, which forces us to NARROW the
+      // error before we can access properties on it.
+      //
+      // Axios ships a built-in type guard, `axios.isAxiosError`, which narrows the unknown
+      // error to `AxiosError` inside the `if` block. Once narrowed, TypeScript knows `.response`
+      // exists and we can safely optional-chain into `.data.message`. This is the canonical
+      // way to handle axios errors in a typesafe codebase.
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message ?? 'Login failed');
+      } else {
+        setError('Login failed');
+      }
     }
   };
 

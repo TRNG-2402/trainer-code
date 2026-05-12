@@ -134,6 +134,16 @@ export function AuthProvider ({ children }: { children: ReactNode}) {
 
 // Finally, we need to provide a hook for child components to call if they need access
 // to the state stored inside of AuthProvider. We will call ours useAuth()
+//
+// STUDENT NOTE: The eslint-disable comment below silences the `react-refresh/only-export-components`
+// rule for this one export. That rule wants .tsx files to export ONLY React components, because
+// Vite's Fast Refresh (Hot Module Replacement for React) can only preserve component state across
+// hot reloads when the file's exports are all components. A non-component export (like this hook)
+// forces a full reload instead of a fast refresh. We're choosing to keep the provider + hook in
+// the same file because it makes the teaching narrative clearer — the trade-off is slightly slower
+// HMR during development. In a production codebase you might split this into two files
+// (e.g. AuthProvider.tsx and useAuth.ts) to keep Fast Refresh happy.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth(): AuthContextValue {
     const ctx = useContext(AuthContext);
 

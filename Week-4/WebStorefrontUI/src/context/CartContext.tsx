@@ -1,10 +1,16 @@
 import { type CartState, type CartAction, initialCartState } from "../types/Cart";
 import { createContext, useContext, useReducer, useMemo, type ReactNode, type Dispatch } from "react";
 
-// Reducers are pure functions 
+// Reducers are pure functions
 // Given the same initial state and action, we will ALWAYS end up at the same new state
 // we never directly mutate the input state -> we simply return a new valid permutation of state
 // we never call anything that can be considered a side effect (no db calls, no HTTP requests via axios or fetch)
+//
+// STUDENT NOTE: Same Fast Refresh rule that fired on useAuth fires here too — `cartReducer` is a
+// plain function, not a component. We export it (rather than keeping it file-local) so unit tests
+// can import and test the reducer in isolation, which is one of the main reasons reducers are
+// nice — they're pure functions that are trivial to test without rendering React.
+// eslint-disable-next-line react-refresh/only-export-components
 export function cartReducer(state: CartState, action: CartAction) {
 
     // Reducers are like a switch for your state - we define the possible
@@ -86,12 +92,21 @@ export function cartReducer(state: CartState, action: CartAction) {
             return initialCartState;
 
         default: {
-            // Like any switch we need a default case. We can actually have TS enforce 
+            // Like any switch we need a default case. We can actually have TS enforce
             // that if somebody adds a new potential action to the CartAction Type, it MUST
             // be handled here. And TS will enforce this for us
-
-            // @ts-ignore
-            const _exhaustive: never = action;
+            //
+            // STUDENT NOTE: We previously used `const _exhaustive: never = action;` paired with a
+            // `@ts-ignore` to do this exhaustiveness check. That tripped two eslint rules:
+            //   1. `@ts-ignore` should be `@ts-expect-error` (and `@ts-expect-error` itself errors
+            //      if the next line has no TS error to suppress — fragile).
+            //   2. `_exhaustive` was an unused variable.
+            // The modern pattern is `satisfies never` (TS 4.9+): if every CartAction variant is
+            // handled in the cases above, TypeScript narrows `action` to `never` here and the
+            // `satisfies` passes. If someone adds a new variant to CartAction without a case for
+            // it, `action` will NOT narrow to `never` and TS will flag this line at compile time.
+            // Same exhaustiveness guarantee, no dummy variable, no `@ts-*` directive needed.
+            action satisfies never;
             return state;
         }
     }
@@ -122,6 +137,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 }
 
 // Finally, like any context, we need a custom hook
+//
+// STUDENT NOTE: Same Fast Refresh rule as useAuth — see the note in AuthContext.tsx for the full
+// explanation. Short version: this hook is a non-component export in a .tsx file, which breaks
+// React Fast Refresh's ability to preserve component state across hot reloads. We accept the
+// trade-off to keep provider + hook colocated for teaching.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCart(): CartContextValue {
     // Our custom hook to call upon our context is going to look basically identical to useAuth()
     const ctx = useContext(CartContext);

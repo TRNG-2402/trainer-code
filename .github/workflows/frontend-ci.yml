@@ -77,8 +77,8 @@ jobs:
             # Here we call EsLint and run static analysis of our code: for us some issues surfaced. 
             # It wants us to break out some functions/components into their own separate files. We aren't
             # interested in this at this time, so we'll just comment this out fow now. 
-          # - name: Lint
-            # run: npm run lint
+          - name: Lint
+            run: npm run lint
 
           - name: Test
             run: npm run test:ci
