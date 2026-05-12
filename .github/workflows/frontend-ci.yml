@@ -71,7 +71,7 @@ jobs:
     # Each workflow can have multiple jobs. We get control over what order they run in
     build: # By default, jobs run concurrently. So you can have multiple jobs going in the same workflow 
         name: Production build
-        needs: lint-test # With "needs" we can have jobs run sequentially, one after the other ONLY
+        # needs: lint-test # With "needs" we can have jobs run sequentially, one after the other ONLY
         runs-on: ubuntu-latest  # if the previous job succeeds 
         steps: 
         
