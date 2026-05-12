@@ -109,6 +109,15 @@ jobs:
             env: # If I have secrets/variables setup I can have the runner ask for them to avoid hardcoding values in this file
                 VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }} # Thankfully the invocation syntax is the same for secrets or variables
 
+            # A job can upload an artifact to your repo - then humans can inspect it - OR other Jobs in this or other workflows
+            # can make use of that output
+          - name: Upload dist artifact
+            uses: actions/upload-artifact@v4
+            with:
+                name: webstorefront-dist
+                path: Week-4/WebStorefrontUI/dist
+                retention-days: 7
+
     docker:
         name: Docker image build
         needs: build
@@ -117,6 +126,12 @@ jobs:
         
           - name: Checkout repository
             uses: actions/checkout@v4
+
+          - name: Download dist artifact
+            uses: actions/download-artifact@v4
+            with:
+                name: webstorefront-dist
+                path: Week-4/WebStorefrontUI/dist
 
           - name: Build Docker image (without push for now)
             run: docker build --build-arg VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }} -t webstorefront-ui:ci .
