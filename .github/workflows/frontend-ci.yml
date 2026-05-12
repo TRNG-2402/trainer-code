@@ -49,11 +49,11 @@ jobs:
           - name: Set up Node.js
             uses: actions/setup-node@v4
             with: # We can use "with" to set additional configurations/arguments for our action
-                node-version: '20'
+                node-version: '24'
                 cache: "npm"
                 # One would assume that cache-dependency-path would be a relative path from the working-directory
                 # Unfortunately, this is not the case. Its path-ed from the root of the repo. 
-                cache-dependency-path: Week4/WebstorefrontUI/package-lock.json
+                cache-dependency-path: Week4/WebStorefrontUI/package-lock.json
             
           - name: Install dependencies
             run: npm ci
