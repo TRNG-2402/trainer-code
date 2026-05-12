@@ -12,13 +12,29 @@ name: Frontend CI
 on:
     push: 
         branches: [main] # On pushes into main
+        paths: # We can scope our workflow to trigger on specific files/directory changes
+          - 'Week-4/WebStorefrontUI/**' # Double ** as a wildcard, any changes to files in this directory
+          - '.github/workflows/frontend-ci.yml' # Specific file scoping
+    
     pull_request:
         branches: [main] # On pull requests from another branch, into main
+        paths: 
+          - 'Week-4/WebStorefrontUI/**' # Double ** as a wildcard, any changes to files in this directory
+          - '.github/workflows/frontend-ci.yml' # Specific file scoping
+
     workflow_dispatch: # On manual trigger
+
+
+# We can actually grant specific permissions to our Workflow
+# If we do this, we want to follow the least-privilege principle: this workflow doesn't write, push anything
+# or send any webhook triggers to any outside system - all it needs to be able to do its jobs
+# is read permissions. As we add to this workflow tomorrow, we can come edit this section
+permissions:
+    contents: read
+
 
 # Since we are using a single repo that has multiple projects and we only want our pipeline
 # to concern itself with out WebstorefronUI React SPA in week 4, we will use a "defaults" section
-
 defaults:
     run:
         working-directory:  Week-4/WebStorefrontUI
@@ -90,6 +106,8 @@ jobs:
         
           - name: Build
             run: npm run build
+            env: # If I have secrets/variables setup I can have the runner ask for them to avoid hardcoding values in this file
+                VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }} # Thankfully the invocation syntax is the same for secrets or variables
 
     docker:
         name: Docker image build
@@ -101,4 +119,4 @@ jobs:
             uses: actions/checkout@v4
 
           - name: Build Docker image (without push for now)
-            run: docker build -t webstorefront-ui:ci .
+            run: docker build --build-arg VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }} -t webstorefront-ui:ci .
