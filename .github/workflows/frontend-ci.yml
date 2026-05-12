@@ -1,0 +1,59 @@
+# This file, will define my CI/CD pipeline, that will run using Github Actions. 
+# None of the stuff I define in here will be used for any sort of local work. 
+# This file is written in YAML - indentation matters in YAML similar to Python
+
+# What is the name of our pipeline, give it a meaningful name. You guys will end up 
+# with two pipelines all showing up in the same UI - make sure you can keep them straight. 
+name: Frontend CI
+
+# The "on" section defines what triggers our pipeline to un
+# We can think of it as "on push to main", or "on pull_request" 
+# We will also add a trigger that allows us to start our pipeline manually
+on:
+    push: 
+        branches: [main] # On pushes into main
+    pull_request:
+        branches: [main] # On pull requests from another branch, into main
+    workflow_dispatch: # On manual trigger
+
+# Since we are using a single repo that has multiple projects and we only want our pipeline
+# to concern itself with out WebstorefronUI React SPA in week 4, we will use a "defaults" section
+
+defaults:
+    run:
+        working-directory:  Week-4/WebStorefrontUI
+
+# Our pipeline is split into jobs - discrete/separate concerns that our pipeline needs to accomplish. 
+# By breaking things down into separate jobs, rather than one "fat" job we make our pipelines more 
+# testable, easily debugged, and performant. 
+# Each job is further subdivided into steps. These steps can be things like "checkout this branch in our repo"
+# "run this shell command", "log into this cloud provider with these credentials", etc, etc
+
+# We define jobs within the jobs section of the file
+jobs:
+
+    # Job 1 - we want to call eslint to perform static analysis of our code, and then run our unit tests
+    lint-test:
+        name: Lint and run unit tests
+        runs-on: ubuntu-latest # This is probably not needed, as Runners SHOULD default to ubuntu
+        steps: # Jobs are split into discrete steps that need to happen sequentially in order to complete them.
+            
+            # First step in our lint-test job: Checkout our repo, have the runner copy the contents of our
+            # git repository onto its filesystem. 
+          - name: Checkout repository 
+            uses: actions/checkout@v6
+
+            # Setup Node.js - our runners come with the bare minimum ubuntu ontop of its kernel
+            # thankfully, they DO come with Docker. But they lack things like Node or the .NET SDK 
+            # or runtimes, or nginx etc. So we have to instruct the runner to grab that software
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with: # We can use "with" to set additional configurations/arguments for our action
+                node-version: '20'
+                cache: "npm"
+                # One would assume that cache-dependency-path would be a relative path from the working-directory
+                # Unfortunately, this is not the case. Its path-ed from the root of the repo. 
+                cache-dependency-path: Week4/WebstorefrontUI/package-lock.json
+            
+          - name: Install dependencies
+            run: npm ci
