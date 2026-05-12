@@ -1,0 +1,15 @@
+# Keep the Docker build context small. Anything listed here is invisible to
+# `COPY` instructions in the Dockerfile.
+
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/*.user
+**/*.suo
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+README.md
+appsettings.Production.json

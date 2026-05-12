@@ -1,0 +1,90 @@
+# Backend CI pipeline for the Week-3 ASP.NET Core Web API.
+# Sibling to frontend-ci.yml. Same three-stage shape: test -> build -> docker.
+# CI-only scope: no registry push, no Azure deploy.
+
+name: Backend CI
+
+# Triggers: push/PR to main when the backend folder or this workflow changes,
+# plus a manual "Run workflow" button (workflow_dispatch).
+on:
+    push:
+        branches: [main]
+        paths:
+          - 'Week-3/WebStorefrontApp/**'
+          - '.github/workflows/backend-ci.yml'
+    pull_request:
+        branches: [main]
+        paths:
+          - 'Week-3/WebStorefrontApp/**'
+          - '.github/workflows/backend-ci.yml'
+    workflow_dispatch:
+
+# Least-privilege: this workflow only reads the repo. It does not write,
+# publish, or comment back. Grant more here explicitly if a future step needs it.
+permissions:
+    contents: read
+
+# All `run:` steps execute from the solution root unless a step overrides it.
+# (`uses:` actions like checkout are unaffected -- they always operate at the
+# repo root.)
+defaults:
+    run:
+        working-directory: Week-3/WebStorefrontApp
+
+jobs:
+
+    # Job 1 - restore + run xUnit tests. Fails fast on a broken test.
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+
+          - name: Set up .NET
+            uses: actions/setup-dotnet@v4
+            with:
+                dotnet-version: '10.0.x'
+
+          - name: Restore dependencies
+            run: dotnet restore WebStorefront.API/TechSupportSystem.sln
+
+          - name: Test
+            run: dotnet test WebStorefront.API/TechSupportSystem.sln --no-restore --verbosity normal
+
+    # Job 2 - production publish. Confirms the API project compiles in Release
+    # mode against the same restored package graph. Runs only if `test` is green.
+    build:
+        name: Production build
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+
+          - name: Set up .NET
+            uses: actions/setup-dotnet@v4
+            with:
+                dotnet-version: '10.0.x'
+
+          - name: Restore dependencies
+            run: dotnet restore WebStorefront.API/TechSupportSystem.sln
+
+          - name: Publish
+            run: dotnet publish WebStorefront.API/TechSupportSystem.csproj -c Release --no-restore -o ./publish
+
+    # Job 3 - build the runtime Docker image. No push, no registry. Proves the
+    # same Dockerfile that developers run locally also builds on a fresh runner.
+    docker:
+        name: Docker image build
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+
+          - name: Build Docker image (no push)
+            # Override working-directory: Dockerfile + build context live at the
+            # API project level, not the solution level.
+            working-directory: Week-3/WebStorefrontApp/WebStorefront.API
+            run: docker build -t webstorefront-api:ci .
