@@ -1,5 +1,6 @@
 import type { Product } from "../types/Product"
 import { useCart } from "../context/CartContext"
+import React from React;
 
 interface AddToCartButtonProps {
     product: Product
