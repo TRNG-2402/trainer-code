@@ -123,7 +123,22 @@ jobs:
         needs: build
         runs-on: ubuntu-latest
         steps: 
+
+          # Original steps commented out - but preserved for reference
         
+          # - name: Checkout repository
+          #   uses: actions/checkout@v4
+
+          # - name: Download dist artifact
+          #   uses: actions/download-artifact@v4
+          #   with:
+          #       name: webstorefront-dist
+          #       path: Week-4/WebStorefrontUI/dist
+
+          # - name: Build Docker image (without push for now)
+          #   run: docker build --build-arg VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }} -t webstorefront-ui:ci .
+
+          # New steps to login to Dockerhub, and build and push our image so that Azure can pull it later
           - name: Checkout repository
             uses: actions/checkout@v4
 
@@ -133,5 +148,36 @@ jobs:
                 name: webstorefront-dist
                 path: Week-4/WebStorefrontUI/dist
 
-          - name: Build Docker image (without push for now)
-            run: docker build --build-arg VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }} -t webstorefront-ui:ci .
+
+          # Login to Dockerhub using that PAT (personal access token) stored in repo Secrets
+          # This action, docker/login-action wraps the docker login CLI command 
+          # If we were to just use a run rather an a uses block, we would expose the PAT to logs
+          # because the actual command would appear
+          - name: Log in to Dockerhub
+            uses: docker/login-action@v3
+            with: 
+              username: ${{ vars.DOCKER_HUB_USERNAME }}
+              password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+          # Compute tags for our image. We can use metadata-action to give us a clean tag
+          # :sha plus a :latest tag - automatically based on the run. This means every version
+          # of our image that gets created can be rolled back to
+          - name: Compute image tags
+            id: meta # Unique identifier for a step, used to refer to an individual step's output in a subsequent step
+            uses: docker/metadata-actions@v5
+            with:
+              images: ${{ vars.DOCKER_HUB_USERNAME }}/webstorefront-ui # this will be the image's name
+              tags: | # Adding our computed tags, the sha tag will be a unique identifier
+                type=raw, value=latest,enable={{is_default_branch}} 
+                type=sha, format=short
+
+
+          # Finally, we can build and push to Dockerhub in one step
+          - name: Build and push to Dockerhub
+            uses: docker/build-push-action@v6
+            with: 
+              context: Week-4/WebStorefrontUI
+              push: true # This flips from CI to CD - now we are performing deployment.
+              tags: ${{ steps.meta.outputs.tags }}
+              labels: ${{ steps.meta.outputs.labels }}
+              build-args: VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
