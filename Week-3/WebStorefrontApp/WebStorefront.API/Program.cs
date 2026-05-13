@@ -100,7 +100,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("WebStorefrontUI", policy => 
         policy.WithOrigins(
                 "http://localhost:5173",
-                "http://localhost:8080")
+                "http://localhost:8080",
+                "webstorefront-ui-jdc-e3gweugpa2hpguh6.westus2-01.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
