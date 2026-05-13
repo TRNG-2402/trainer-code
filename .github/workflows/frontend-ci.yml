@@ -164,7 +164,7 @@ jobs:
           # of our image that gets created can be rolled back to
           - name: Compute image tags
             id: meta # Unique identifier for a step, used to refer to an individual step's output in a subsequent step
-            uses: docker/metadata-actions@v5
+            uses: docker/metadata-action@v5
             with:
               images: ${{ vars.DOCKER_HUB_USERNAME }}/webstorefront-ui # this will be the image's name
               tags: | # Adding our computed tags, the sha tag will be a unique identifier
